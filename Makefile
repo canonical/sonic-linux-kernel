@@ -2,11 +2,11 @@
 SHELL = /bin/bash
 .SHELLFLAGS += -e
 
-KERNEL_ABI_MINOR_VERSION = 2
-KVERSION_SHORT ?= 6.1.0-11-$(KERNEL_ABI_MINOR_VERSION)
+KERNEL_ABI_MINOR_VERSION = 9.9
+KVERSION_SHORT ?= 6.5.0-15-$(KERNEL_ABI_MINOR_VERSION)
 KVERSION ?= $(KVERSION_SHORT)-amd64
-KERNEL_VERSION ?= 6.1.38
-KERNEL_SUBVERSION ?= 4
+KERNEL_VERSION ?= 6.5.0
+KERNEL_SUBVERSION ?= 15
 kernel_procure_method ?= build
 CONFIGURED_ARCH ?= amd64
 CONFIGURED_PLATFORM ?= vs
@@ -22,23 +22,39 @@ else
 endif
 
 MAIN_TARGET = $(LINUX_HEADER_COMMON)
-DERIVED_TARGETS = $(LINUX_HEADER_AMD64) $(LINUX_IMAGE)
+
+ifeq ($(BLDENV),jammy)
+	LINUX_MODULES = linux-modules-$(KVERSION_SHORT)-common_$(KERNEL_VERSION)-$(KERNEL_SUBVERSION)_$(CONFIGURED_ARCH).deb
+	DERIVED_TARGETS = $(LINUX_MODULES) $(LINUX_IMAGE)
+else
+	DERIVED_TARGETS = $(LINUX_HEADER_AMD64) $(LINUX_IMAGE)
+endif
 
 ifneq ($(kernel_procure_method), build)
 # Downloading kernel
 
+ifneq ($(BLDENV),jammy)
 # TBD, need upload the new kernel packages
-LINUX_HEADER_COMMON_URL = "https://sonicstorage.blob.core.windows.net/packages/kernel-public/linux-headers-$(KVERSION_SHORT)-common_$(KERNEL_VERSION)-$(KERNEL_SUBVERSION)_all.deb?sv=2015-04-05&sr=b&sig=JmF0asLzRh6btfK4xxfVqX%2F5ylqaY4wLkMb5JwBJOb8%3D&se=2128-12-23T19%3A05%3A28Z&sp=r"
-
-LINUX_HEADER_AMD64_URL = "https://sonicstorage.blob.core.windows.net/packages/kernel-public/linux-headers-$(KVERSION_SHORT)-amd64_$(KERNEL_VERSION)-$(KERNEL_SUBVERSION)_amd64.deb?sv=2015-04-05&sr=b&sig=%2FD9a178J4L%2FN3Fi2uX%2FWJaddpYOZqGmQL4WAC7A7rbA%3D&se=2128-12-23T19%3A06%3A13Z&sp=r"
-
-LINUX_IMAGE_URL = "https://sonicstorage.blob.core.windows.net/packages/kernel-public/linux-image-$(KVERSION_SHORT)-amd64_$(KERNEL_VERSION)-$(KERNEL_SUBVERSION)_amd64.deb?sv=2015-04-05&sr=b&sig=oRGGO9xJ6jmF31KGy%2BwoqEYMuTfCDcfILKIJbbaRFkU%3D&se=2128-12-23T19%3A06%3A47Z&sp=r"
+	LINUX_HEADER_COMMON_URL = "https://sonicstorage.blob.core.windows.net/packages/kernel-public/linux-headers-$(KVERSION_SHORT)-common_$(KERNEL_VERSION)-$(KERNEL_SUBVERSION)_all.deb?sv=2015-04-05&sr=b&sig=JmF0asLzRh6btfK4xxfVqX%2F5ylqaY4wLkMb5JwBJOb8%3D&se=2128-12-23T19%3A05%3A28Z&sp=r"
+	
+	LINUX_HEADER_AMD64_URL = "https://sonicstorage.blob.core.windows.net/packages/kernel-public/linux-headers-$(KVERSION_SHORT)-amd64_$(KERNEL_VERSION)-$(KERNEL_SUBVERSION)_amd64.deb?sv=2015-04-05&sr=b&sig=%2FD9a178J4L%2FN3Fi2uX%2FWJaddpYOZqGmQL4WAC7A7rbA%3D&se=2128-12-23T19%3A06%3A13Z&sp=r"
+	
+	LINUX_IMAGE_URL = "https://sonicstorage.blob.core.windows.net/packages/kernel-public/linux-image-$(KVERSION_SHORT)-amd64_$(KERNEL_VERSION)-$(KERNEL_SUBVERSION)_amd64.deb?sv=2015-04-05&sr=b&sig=oRGGO9xJ6jmF31KGy%2BwoqEYMuTfCDcfILKIJbbaRFkU%3D&se=2128-12-23T19%3A06%3A47Z&sp=r"
+else 
+	LINUX_HEADER_COMMON_URL = "http://security.ubuntu.com/ubuntu/pool/main/l/linux-hwe-6.5/linux-headers-6.5.0-15-generic_6.5.0-15.15~22.04.1_amd64.deb"
+	LINUX_MODULES_URL = "http://security.ubuntu.com/ubuntu/pool/main/l/linux-hwe-6.5/linux-modules-6.5.0-15-generic_6.5.0-15.15~22.04.1_amd64.deb"
+	LINUX_IMAGE_URL = "http://security.ubuntu.com/ubuntu/pool/main/l/linux-hwe-6.5/linux-image-unsigned-6.5.0-15-generic_6.5.0-15.15~22.04.1_amd64.deb"
+endif
 
 $(addprefix $(DEST)/, $(MAIN_TARGET)): $(DEST)/% :
 	# Obtaining the Debian kernel packages
 	rm -rf $(BUILD_DIR)
 	wget --no-use-server-timestamps -O $(LINUX_HEADER_COMMON) $(LINUX_HEADER_COMMON_URL)
+ifneq ($(BLDENV),jammy)
 	wget --no-use-server-timestamps -O $(LINUX_HEADER_AMD64) $(LINUX_HEADER_AMD64_URL)
+else
+	wget --no-use-server-timestamps -O $(LINUX_MODULES) $(LINUX_MODULES_URL)
+endif
 	wget --no-use-server-timestamps -O $(LINUX_IMAGE) $(LINUX_IMAGE_URL)
 
 ifneq ($(DEST),)
