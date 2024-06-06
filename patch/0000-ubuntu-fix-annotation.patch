@@ -1,0 +1,25 @@
+From d8f4a3c9665c600f7ac5ddd8ba7f799586f9360f Mon Sep 17 00:00:00 2001
+From: Ubuntu <ubuntu@ip-172-31-38-169.us-west-2.compute.internal>
+Date: Thu, 6 Jun 2024 07:38:57 +0000
+Subject: [PATCH] fix:annotation
+
+---
+ debian.hwe-6.2/config/annotations | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/debian.hwe-6.2/config/annotations b/debian.hwe-6.2/config/annotations
+index d09a1124200d..76bc4ac4f308 100644
+--- a/debian.hwe-6.2/config/annotations
++++ b/debian.hwe-6.2/config/annotations
+@@ -44,3 +44,8 @@ CONFIG_SAMPLES_RUST                             policy<{'amd64': '-'}>
+ CONFIG_SHADOW_CALL_STACK                        policy<{'arm64': '-'}>
+ CONFIG_STACKPROTECTOR_PER_TASK                  policy<{'arm64': 'y', 'armhf': '-', 'riscv64': 'y'}>
+ CONFIG_TOOLCHAIN_HAS_ZICBOM                     policy<{'riscv64': '-'}>
++CONFIG_EEPROM_OPTOE                             policy<{'amd64': 'n'}>
++CONFIG_EEPROM_SFF_8436                          policy<{'amd64': 'n'}>
++CONFIG_I2C_MUX_REGMAP                           policy<{'amd64': 'n'}>
++CONFIG_PCI_REASSIGN_PREF_MEM                    policy<{'amd64': 'n'}>
++CONFIG_SENSORS_MP2891                           policy<{'amd64': 'n'}>
+-- 
+2.34.1
+
