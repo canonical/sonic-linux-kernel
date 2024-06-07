@@ -36,14 +36,11 @@ LINUX_IMAGE_URL = "http://security.ubuntu.com/ubuntu/pool/main/l/linux-hwe-6.5/l
 
 $(addprefix $(DEST)/, $(MAIN_TARGET)): $(DEST)/% :
 	# Obtaining the Debian kernel packages
-	rm -rf $(BUILD_DIR)
-	wget --no-use-server-timestamps -O $(LINUX_HEADER_COMMON) $(LINUX_HEADER_COMMON_URL)
-ifneq ($(BLDENV),jammy)
-	wget --no-use-server-timestamps -O $(LINUX_HEADER_AMD64) $(LINUX_HEADER_AMD64_URL)
-else
-	wget --no-use-server-timestamps -O $(LINUX_MODULES) $(LINUX_MODULES_URL)
-endif
-	wget --no-use-server-timestamps -O $(LINUX_IMAGE) $(LINUX_IMAGE_URL)
+	####rm -rf $(BUILD_DIR)
+	####wget --no-use-server-timestamps -O $(LINUX_HEADER_COMMON) $(LINUX_HEADER_COMMON_URL)
+	####wget --no-use-server-timestamps -O $(LINUX_MODULES) $(LINUX_MODULES_URL)
+	####wget --no-use-server-timestamps -O $(LINUX_IMAGE) $(LINUX_IMAGE_URL)
+	cp ubuntu-linux-$(KERNEL_VERSION)/* ./ 
 
 ifneq ($(DEST),)
 	mv $(DERIVED_TARGETS) $* $(DEST)/
@@ -61,32 +58,6 @@ SOURCE_FILE_BRANCH = "hwe-6.2-prep"
 NON_UP_DIR = /tmp/non_upstream_patches
 
 $(addprefix $(DEST)/, $(MAIN_TARGET)): $(DEST)/% :
-	# Include any non upstream patches
-	#rm -rf $(NON_UP_DIR)
-	#mkdir -p $(NON_UP_DIR)
-
-	#if [ x${INCLUDE_EXTERNAL_PATCHES} == xy ]; then
-	#	if [ ! -z ${EXTERNAL_KERNEL_PATCH_URL} ]; then
-	#		wget $(EXTERNAL_KERNEL_PATCH_URL) -O patches.tar
-	#		tar -xf patches.tar -C $(NON_UP_DIR)
-	#	else
-	#		if [ -d "$(EXTERNAL_KERNEL_PATCH_LOC)" ]; then
-	#			cp -r $(EXTERNAL_KERNEL_PATCH_LOC)/* $(NON_UP_DIR)/
-	#		fi
-	#	fi
-	#fi
-
-	#if [ -f "$(NON_UP_DIR)/external-changes.patch" ]; then
-	#	cat $(NON_UP_DIR)/external-changes.patch
-	#	git stash -- patch/
-	#	git apply $(NON_UP_DIR)/external-changes.patch
-	#fi
-
-	#if [ -d "$(NON_UP_DIR)/patches" ]; then
-	#	echo "Copy the non upstream patches"
-	#	cp $(NON_UP_DIR)/patches/*.patch patch/
-	#fi
-
 	# Obtaining the Debian kernel source
 	rm -rf $(BUILD_DIR)
 	git clone -b $(SOURCE_FILE_BRANCH) $(SOURCE_FILE_BASE_URL) $(BUILD_DIR)
@@ -103,10 +74,10 @@ $(addprefix $(DEST)/, $(MAIN_TARGET)): $(DEST)/% :
 	#fi
 
 	# Building a custom kernel from ubuntu kernel source
-	fakeroot debian/rules clean
-
-	fakeroot debian/rules binary-headers binary-generic binary-perarch
-
+	fakeroot make -f debian/rules clean
+	chmod a+x debian/scripts/*
+	chmod a+x debian/scripts/misc/*
+	fakeroot debian/rules binary-headers binary-generic
 	popd
 
 ifneq ($(DEST),)
