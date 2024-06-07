@@ -6,7 +6,7 @@ ifeq ($(BLDENV),jammy)
 # jammy kernel build section ########
 KERNEL_ABI_MINOR_VERSION = 39
 KVERSION_SHORT ?= 6.2.0-$(KERNEL_ABI_MINOR_VERSION)
-KVERSION ?= $(KVERSION_SHORT)-amd64
+KVERSION ?= $(KVERSION_SHORT)-generic
 KERNEL_VERSION ?= 6.2.0
 KERNEL_SUBVERSION ?= 39
 kernel_procure_method ?= build
@@ -25,7 +25,7 @@ endif
 MAIN_TARGET = $(LINUX_HEADER_COMMON)
 
 LINUX_MODULES = linux-modules-$(KVERSION_SHORT)-common_$(KERNEL_VERSION)-$(KERNEL_SUBVERSION)_$(CONFIGURED_ARCH).deb
-DERIVED_TARGETS = $(LINUX_MODULES) $(LINUX_IMAGE)
+DERIVED_TARGETS = $(LINUX_HEADER_AMD64) $(LINUX_MODULES) $(LINUX_IMAGE)
 
 ifneq ($(kernel_procure_method), build)
 # Downloading kernel
