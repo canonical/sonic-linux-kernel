@@ -4,11 +4,11 @@ SHELL = /bin/bash
 
 ifeq ($(BLDENV),jammy) 
 # jammy kernel build section ########
-KERNEL_ABI_MINOR_VERSION = 39
-KVERSION_SHORT ?= 6.2.0-$(KERNEL_ABI_MINOR_VERSION)
+KERNEL_ABI_MINOR_VERSION = 40
+KVERSION_SHORT ?= 6.8.0-$(KERNEL_ABI_MINOR_VERSION)
 KVERSION ?= $(KVERSION_SHORT)-generic
-KERNEL_VERSION ?= 6.2.0
-KERNEL_SUBVERSION ?= 39
+KERNEL_VERSION ?= 6.8.0
+KERNEL_SUBVERSION ?= 40
 kernel_procure_method ?= build
 CONFIGURED_ARCH ?= amd64
 CONFIGURED_PLATFORM ?= vs
@@ -53,7 +53,7 @@ else
 
 BUILD_DIR=linux-$(KERNEL_VERSION)
 SOURCE_FILE_BASE_URL="https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/jammy"
-SOURCE_FILE_BRANCH = "hwe-6.2-prep"
+SOURCE_FILE_BRANCH = "hwe-6.8-next"
 
 NON_UP_DIR = /tmp/non_upstream_patches
 
