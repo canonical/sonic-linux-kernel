@@ -2,8 +2,8 @@
 SHELL = /bin/bash
 .SHELLFLAGS += -e
 
-ifeq ($(BLDENV),jammy) 
-# jammy kernel build section ########
+ifeq ($(BLDENV),noble) 
+# noble kernel build section ########
 KERNEL_ABI_MINOR_VERSION = 40
 KVERSION_SHORT ?= 6.8.0-$(KERNEL_ABI_MINOR_VERSION)
 KVERSION ?= $(KVERSION_SHORT)-generic
@@ -53,8 +53,8 @@ else
 # Jammy Building kernel
 
 BUILD_DIR=linux-$(KERNEL_VERSION)
-SOURCE_FILE_BASE_URL="https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/jammy"
-SOURCE_FILE_BRANCH = "hwe-6.8-next"
+SOURCE_FILE_BASE_URL="https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/noble"
+SOURCE_FILE_BRANCH = "Ubuntu-6.8.0-40.40"
 
 NON_UP_DIR = /tmp/non_upstream_patches
 
@@ -88,9 +88,9 @@ endif
 $(addprefix $(DEST)/, $(DERIVED_TARGETS)): $(DEST)/% : $(DEST)/$(MAIN_TARGET)
 
 endif # building kernel
-#end of jammy kernel build section ####
+#end of noble kernel build section ####
 
-else # none-jammy build 
+else # none-noble build 
 
 KERNEL_ABI_MINOR_VERSION = 2
 KVERSION_SHORT ?= 6.1.0-11-$(KERNEL_ABI_MINOR_VERSION)
@@ -241,4 +241,4 @@ $(addprefix $(DEST)/, $(DERIVED_TARGETS)): $(DEST)/% : $(DEST)/$(MAIN_TARGET)
 
 endif # building kernel
 
-endif # none-jammy build
+endif # none-noble build
