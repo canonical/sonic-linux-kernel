@@ -4,11 +4,11 @@ SHELL = /bin/bash
 
 ifeq ($(BLDENV),noble) 
 # noble kernel build section ########
-KERNEL_ABI_MINOR_VERSION = 40
+KERNEL_ABI_MINOR_VERSION = 1000
 KVERSION_SHORT ?= 6.8.0-$(KERNEL_ABI_MINOR_VERSION)
-KVERSION ?= $(KVERSION_SHORT)-generic
+KVERSION ?= $(KVERSION_SHORT)-sonic
 KERNEL_VERSION ?= 6.8.0
-KERNEL_SUBVERSION ?= 40
+KERNEL_SUBVERSION ?= 1000
 kernel_procure_method ?= build
 CONFIGURED_ARCH ?= amd64
 CONFIGURED_PLATFORM ?= vs
@@ -25,23 +25,25 @@ endif
 MAIN_TARGET = $(LINUX_HEADER_COMMON)
 
 LINUX_MODULES = linux-modules-$(KVERSION_SHORT)-common_$(KERNEL_VERSION)-$(KERNEL_SUBVERSION)_$(CONFIGURED_ARCH).deb
-LINUX_EXTRA_MODULES = linux-modules-extra-$(KVERSION_SHORT)-generic_$(KERNEL_VERSION)-$(KERNEL_SUBVERSION)_$(CONFIGURED_ARCH).deb
+#LINUX_EXTRA_MODULES = linux-modules-extra-$(KVERSION_SHORT)-generic_$(KERNEL_VERSION)-$(KERNEL_SUBVERSION)_$(CONFIGURED_ARCH).deb
 DERIVED_TARGETS = $(LINUX_HEADER_AMD64) $(LINUX_MODULES) $(LINUX_EXTRA_MODULES) $(LINUX_IMAGE)
 
 ifneq ($(kernel_procure_method), build)
 # Downloading kernel
 
-LINUX_HEADER_COMMON_URL = "http://security.ubuntu.com/ubuntu/pool/main/l/linux-hwe-6.5/linux-headers-6.5.0-15-generic_6.5.0-15.15~22.04.1_amd64.deb"
-LINUX_MODULES_URL = "http://security.ubuntu.com/ubuntu/pool/main/l/linux-hwe-6.5/linux-modules-6.5.0-15-generic_6.5.0-15.15~22.04.1_amd64.deb"
-LINUX_IMAGE_URL = "http://security.ubuntu.com/ubuntu/pool/main/l/linux-hwe-6.5/linux-image-unsigned-6.5.0-15-generic_6.5.0-15.15~22.04.1_amd64.deb"
+LINUX_HEADER_COMMON_URL = "https://launchpad.net/~mehmetbasaran/+archive/ubuntu/noble-linux-sonic-0/+files/linux-sonic-headers-6.8.0-1000_6.8.0-1000.0_all.deb"
+LINUX_HEADER_AMD64_URL = "https://launchpad.net/~mehmetbasaran/+archive/ubuntu/noble-linux-sonic-0/+files/linux-headers-6.8.0-1000-sonic_6.8.0-1000.0_amd64.deb"
+LINUX_MODULES_URL = "https://launchpad.net/~mehmetbasaran/+archive/ubuntu/noble-linux-sonic-0/+files/linux-modules-6.8.0-1000-sonic_6.8.0-1000.0_amd64.deb"
+LINUX_IMAGE_URL = "https://launchpad.net/~mehmetbasaran/+archive/ubuntu/noble-linux-sonic-0/+files/linux-image-unsigned-6.8.0-1000-sonic_6.8.0-1000.0_amd64.deb"
+
 
 $(addprefix $(DEST)/, $(MAIN_TARGET)): $(DEST)/% :
 	# Obtaining the Debian kernel packages
-	####rm -rf $(BUILD_DIR)
-	####wget --no-use-server-timestamps -O $(LINUX_HEADER_COMMON) $(LINUX_HEADER_COMMON_URL)
-	####wget --no-use-server-timestamps -O $(LINUX_MODULES) $(LINUX_MODULES_URL)
-	####wget --no-use-server-timestamps -O $(LINUX_IMAGE) $(LINUX_IMAGE_URL)
-	cp ubuntu-linux-$(KERNEL_VERSION)/* ./ 
+	rm -rf $(BUILD_DIR)
+	wget --no-use-server-timestamps -O $(LINUX_HEADER_COMMON) $(LINUX_HEADER_COMMON_URL)
+	wget --no-use-server-timestamps -O $(LINUX_MODULES) $(LINUX_MODULES_URL)
+	wget --no-use-server-timestamps -O $(LINUX_IMAGE) $(LINUX_IMAGE_URL)
+	wget --no-use-server-timestamps -O $(LINUX_HEADER_AMD64) $(LINUX_HEADER_AMD64_URL)
 
 ifneq ($(DEST),)
 	mv $(DERIVED_TARGETS) $* $(DEST)/
