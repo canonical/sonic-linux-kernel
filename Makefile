@@ -31,10 +31,10 @@ DERIVED_TARGETS = $(LINUX_HEADER_AMD64) $(LINUX_MODULES) $(LINUX_EXTRA_MODULES) 
 ifneq ($(kernel_procure_method), build)
 # Downloading kernel
 
-LINUX_HEADER_COMMON_URL = "https://launchpad.net/~mehmetbasaran/+archive/ubuntu/noble-linux-sonic-0/+files/linux-sonic-headers-6.8.0-1000_6.8.0-1000.0_all.deb"
-LINUX_HEADER_AMD64_URL = "https://launchpad.net/~mehmetbasaran/+archive/ubuntu/noble-linux-sonic-0/+files/linux-headers-6.8.0-1000-sonic_6.8.0-1000.0_amd64.deb"
-LINUX_MODULES_URL = "https://launchpad.net/~mehmetbasaran/+archive/ubuntu/noble-linux-sonic-0/+files/linux-modules-6.8.0-1000-sonic_6.8.0-1000.0_amd64.deb"
-LINUX_IMAGE_URL = "https://launchpad.net/~mehmetbasaran/+archive/ubuntu/noble-linux-sonic-0/+files/linux-image-unsigned-6.8.0-1000-sonic_6.8.0-1000.0_amd64.deb"
+LINUX_HEADER_COMMON_URL = "https://launchpad.net/~mehmetbasaran/+archive/ubuntu/noble-linux-sonic-0/+files/linux-sonic-headers-6.8.0-1000_6.8.0-1000.1_all.deb"
+LINUX_HEADER_AMD64_URL = "https://launchpad.net/~mehmetbasaran/+archive/ubuntu/noble-linux-sonic-0/+files/linux-headers-6.8.0-1000-sonic_6.8.0-1000.1_amd64.deb"
+LINUX_MODULES_URL = "https://launchpad.net/~mehmetbasaran/+archive/ubuntu/noble-linux-sonic-0/+files/linux-modules-6.8.0-1000-sonic_6.8.0-1000.1_amd64.deb"
+LINUX_IMAGE_URL = "https://launchpad.net/~mehmetbasaran/+archive/ubuntu/noble-linux-sonic-0/+files/linux-image-unsigned-6.8.0-1000-sonic_6.8.0-1000.1_amd64.deb"
 
 
 $(addprefix $(DEST)/, $(MAIN_TARGET)): $(DEST)/% :
