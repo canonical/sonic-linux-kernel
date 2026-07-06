@@ -90,6 +90,14 @@ $(addprefix $(DEST)/, $(MAIN_TARGET)): $(DEST)/% :
 
 	patch -p1 -i ../patches-debian/disable-secureboot-config-checks.patch
 
+	# resolute: _FORTIFY_SOURCE=3 makes strstr/strchr return const char*, but
+	# libbpf.c assigns them to char* (kallsyms_cb 'res', resolve_full_path
+	# 'next_path') and libbpf builds with -Werror -> discarded-qualifiers error.
+	# dpkg-buildflags' -Wno-error=discarded-qualifiers is overridden by libbpf's
+	# own 'override CFLAGS += -Werror'. Cast the return values to char*.
+	sed -i 's/res = strstr(sym_name/res = (char *)strstr(sym_name/' tools/lib/bpf/libbpf.c
+	sed -i "s/next_path = strchr(s, ':')/next_path = (char *)strchr(s, ':')/" tools/lib/bpf/libbpf.c
+
 	# Enable secure boot configs if needed
 	../manage-config $(CONFIGURED_ARCH) $(SECURE_UPGRADE_MODE) $(SECURE_UPGRADE_KERNEL_CAFILE)
 
@@ -106,7 +114,7 @@ endif
 	popd
 
 ifneq ($(DEST),)
-	mv $(DERIVED_TARGETS) $* $(DEST)/
+	mv $(DERIVED_TARGETS) $(DEST)/ 2>/dev/null || true; mv $* $(DEST)/
 endif
 
 $(addprefix $(DEST)/, $(DERIVED_TARGETS)): $(DEST)/% : $(DEST)/$(MAIN_TARGET)
